@@ -37,7 +37,7 @@ CONSTANT_COSZEN_IC = -1.0       !   [nondim] default = -1.0
                                 ! A constant value to use to initialize the cosine of the solar zenith angle for
                                 ! the first radiation step, or a negative number to use the current time and
                                 ! astronomy.
-DT_RADIATION = 3600.0           !   [s] default = 3600.0
+DT_RADIATION = 1800.0           !   [s] default = 1800.0
                                 ! The time step with which the shortwave radiation and fields like albedos are
                                 ! updated.  Currently this is only used to initialize albedos when there is no
                                 ! restart file.
@@ -108,10 +108,10 @@ REENTRANT_Y = False             !   [Boolean] default = False
 TRIPOLAR_N = False              !   [Boolean] default = False
                                 ! Use tripolar connectivity at the northern edge of the domain.  With
                                 ! TRIPOLAR_N, NIGLOBAL must be even.
-NIGLOBAL = 2000                 !
+NIGLOBAL = 1678                 !
                                 ! The total number of thickness grid points in the x-direction in the physical
                                 ! domain. With STATIC_MEMORY_ this is set in SIS2_memory.h at compile time.
-NJGLOBAL = 1300                 !
+NJGLOBAL = 1844                 !
                                 ! The total number of thickness grid points in the y-direction in the physical
                                 ! domain. With STATIC_MEMORY_ this is set in SIS2_memory.h at compile time.
 NIHALO = 4                      ! default = 4
@@ -149,7 +149,7 @@ GRID_CONFIG = "mosaic"          !
                                 !     cartesian - use a (flat) Cartesian grid.
                                 !     spherical - use a simple spherical grid.
                                 !     mercator - use a Mercator spherical grid.
-GRID_FILE = "ocean_hgrid.nc"    !
+GRID_FILE = "regional.mom6.nc"  !
                                 ! Name of the file from which to read horizontal grid data.
 USE_TRIPOLAR_GEOLONB_BUG = False !   [Boolean] default = False
                                 ! If true, use older code that incorrectly sets the longitude in some points
@@ -165,7 +165,7 @@ TOPO_CONFIG = "file"            ! default = "file"
                                 !       wall at the southern face.
                                 !     halfpipe - a zonally uniform channel with a half-sine
                                 !       profile in the meridional direction.
-TOPO_FILE = "ocean_topog.nc"    ! default = "topog.nc"
+TOPO_FILE = "topog_6500m.nc"    ! default = "topog.nc"
                                 ! The file from which the bathymetry is read.
 TOPO_VARNAME = "depth"          ! default = "depth"
                                 ! The name of the bathymetry variable in TOPO_FILE.
@@ -226,7 +226,7 @@ CP_ICE = 2100.0                 !   [J kg-1 K-1] default = 2100.0
                                 ! The heat capacity of fresh ice, approximated as a constant.
 CP_SEAWATER = 4200.0            !   [J kg-1 K-1] default = 4200.0
                                 ! The heat capacity of sea water, approximated as a constant.
-CP_BRINE = 4200.0               !   [J kg-1 K-1] default = 4200.0
+CP_BRINE = 2100.0               !   [J kg-1 K-1] default = 4200.0
                                 ! The heat capacity of water in brine pockets within the sea-ice, approximated
                                 ! as a constant.  CP_BRINE and CP_SEAWATER should be equal, but for
                                 ! computational convenience CP_BRINE can be set equal to CP_ICE.
@@ -269,11 +269,11 @@ SNOW_THICKNESS_INIT_CONFIG = "data_override" ! default = "data_override"
                                 !     file - read sea ice concentrations from a specified file
                                 !     data_override - use the data_override capability or zero everywhere
                                 !     uniform - snow has uniform thickness where the concentration is nonzero.
-ICE_CONCENTRATION_FILE = "SODA_seaice_IC.nc" !
+ICE_CONCENTRATION_FILE = "glorys_ic_seaice_1996.nc" !
                                 ! The name of the sea ice concentration file.
 ICE_CONCENTRATION_IC_VAR = "aice" ! default = "conc_ice"
                                 ! The initial condition variable for ice mass per unit area.
-ICE_THICKNESS_FILE = "SODA_seaice_IC.nc" !
+ICE_THICKNESS_FILE = "glorys_ic_seaice_1996.nc" !
                                 ! The name of the sea ice thickness file.
 ICE_THICKNESS_IC_VAR = "hice"   ! default = "mH_ice"
                                 ! The initial condition variable for ice mass per unit area.
@@ -300,7 +300,7 @@ SNOW_ENTHALPY_INIT_CONFIG = "uniform_temp" ! default = "uniform_temp"
                                 !     file - Read sea ice temperatures or enthalpies from a specified file
                                 !     data_override - use the data_override capability or freezing enthalpy
                                 !       everywhere.
-ICE_SALINITY_IC = 3.0           !   [g kg-1] default = 0.0
+ICE_SALINITY_IC = 0.0           !   [g kg-1] default = 0.0
                                 ! The uniform sea ice salinity used for the initial condition
 ICE_TEMPERATURE_IC = -4.0       !   [degC] default = -4.0
                                 ! The uniform sea ice and snow temperature used for the initial condition
@@ -312,13 +312,10 @@ ICE_BULK_SALINITY = 0.0         !   [g/kg] default = 4.0
 ICE_RELATIVE_SALINITY = 0.1     !   [nondim] default = 0.0
                                 ! The initial salinity of sea ice as a fraction of the salinity of the seawater
                                 ! from which it formed.
-SIS2_FILLING_FRAZIL = True      !   [Boolean] default = True
+SIS2_FILLING_FRAZIL = False     !   [Boolean] default = True
                                 ! If true, apply frazil to fill as many categories as possible to fill in a
                                 ! uniform (minimum) amount of ice in all the thinnest categories. Otherwise the
                                 ! frazil is always assigned to a single category.
-FILLING_FRAZIL_TIMESCALE = 0.0  !   [s] default = 0.0
-                                ! A timescale with which the filling frazil causes the thinest cells to attain
-                                ! similar thicknesses, or a negative number to apply the frazil flux uniformly.
 APPLY_ICE_LIMIT = False         !   [Boolean] default = False
                                 ! If true, restore the sea ice state toward climatology.
 DO_ICE_RESTORE = False          !   [Boolean] default = False
@@ -386,12 +383,9 @@ TIMEUNIT = 8.64E+04             !   [s] default = 8.64E+04
 ICE_STATS_INTERVAL = 1.0        !   [days] default = 1.0
                                 ! The interval in units of TIMEUNIT between writes of the globally summed ice
                                 ! statistics and conservation checks.
-DT_RHEOLOGY = -1.0              !   [seconds] default = -1.0
+DT_RHEOLOGY = 50.0              !   [seconds] default = -1.0
                                 ! The sub-cycling time step for iterating the rheology and ice momentum
                                 ! equations. If DT_RHEOLOGY is negative, the time step is set via NSTEPS_DYN.
-NSTEPS_DYN = 432                ! default = 432
-                                ! The number of iterations of the rheology and ice momentum equations for each
-                                ! slow ice time step.
 ICE_TDAMP_ELASTIC = -0.2        !   [s or nondim] default = -0.2
                                 ! The damping timescale associated with the elastic terms in the sea-ice
                                 ! dynamics equations (if positive) or the fraction of DT_ICE_DYNAMICS (if
@@ -455,7 +449,7 @@ SEA_ICE_ROLL_FACTOR = 1.0       !   [Nondim] default = 1.0
 ICE_COVER_DISCARD = 1.0E-30     !   [nondim] default = -1.0
                                 ! A tiny fractional ice coverage which if positive causes the mass in categories
                                 ! with less than this coverage to be discarded.
-SIS_THICKNESS_ADVECTION_SCHEME = "PPM:H3" ! default = "UPWIND_2D"
+SIS_THICKNESS_ADVECTION_SCHEME = "PCM" ! default = "UPWIND_2D"
                                 ! The horizontal transport scheme for thickness:
                                 !   UPWIND_2D - Non-directionally split upwind
                                 !   PCM    - Directionally split piecewise constant
@@ -464,7 +458,7 @@ SIS_THICKNESS_ADVECTION_SCHEME = "PPM:H3" ! default = "UPWIND_2D"
 INCONSISTENT_COVER_BUG = False  !   [Boolean] default = False
                                 ! If true, omit a recalculation of the fractional ice-free areal coverage after
                                 ! the adjustment of the ice categories.
-SIS_CONTINUITY_SCHEME = "PPM:C2PD" ! default = "UPWIND_2D"
+SIS_CONTINUITY_SCHEME = "PCM"   ! default = "UPWIND_2D"
                                 ! The horizontal transport scheme used in continuity:
                                 !   UPWIND_2D - Non-directionally split upwind
                                 !   PCM       - Directionally split piecewise constant
@@ -508,7 +502,7 @@ WRITE_STOCKS = True             !   [Boolean] default = True
 STDOUT_HEARTBEAT = True         !   [Boolean] default = True
                                 ! If true, periodically write sea ice statistics to stdout to allow the progress
                                 ! to be seen.
-MAXTRUNC = 200                  !   [truncations save_interval-1] default = 0
+MAXTRUNC = 100000               !   [truncations save_interval-1] default = 0
                                 ! The run will be stopped, and the day set to a very large value if the velocity
                                 ! is truncated more than MAXTRUNC times between  writing ice statistics. Set
                                 ! MAXTRUNC to 0 to stop if there is any truncation of sea ice velocities.
