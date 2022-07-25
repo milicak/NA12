@@ -440,6 +440,33 @@ EPBL_IS_ADDITIVE = False        !   [Boolean] default = True
 
 ! === module MOM_set_diffusivity ===
 
+! === module MOM_tidal_mixing ===
+! Vertical Tidal Mixing Parameterization
+INT_TIDE_DISSIPATION = True     !   [Boolean] default = False
+                                ! If true, use an internal tidal dissipation scheme to drive diapycnal mixing,
+                                ! along the lines of St. Laurent et al. (2002) and Simmons et al. (2004).
+INT_TIDE_PROFILE = "POLZIN_09"  ! default = "STLAURENT_02"
+                                ! INT_TIDE_PROFILE selects the vertical profile of energy dissipation with
+                                ! INT_TIDE_DISSIPATION. Valid values are:
+                                !    STLAURENT_02 - Use the St. Laurent et al exponential
+                                !                   decay profile.
+                                !    POLZIN_09 - Use the Polzin WKB-stretched algebraic
+                                !                   decay profile.
+INT_TIDE_DECAY_SCALE = 300.3003003003003 !   [m] default = 500.0
+                                ! The decay scale away from the bottom for tidal TKE with the new coding when
+                                ! INT_TIDE_DISSIPATION is used.
+KAPPA_ITIDES = 6.28319E-04      !   [m-1] default = 6.283185307179586E-04
+                                ! A topographic wavenumber used with INT_TIDE_DISSIPATION. The default is 2pi/10
+                                ! km, as in St.Laurent et al. 2002.
+KAPPA_H2_FACTOR = 0.84          !   [nondim] default = 1.0
+                                ! A scaling factor for the roughness amplitude with INT_TIDE_DISSIPATION.
+TKE_ITIDE_MAX = 0.1             !   [W m-2] default = 1000.0
+                                ! The maximum internal tide energy source available to mix above the bottom
+                                ! boundary layer with INT_TIDE_DISSIPATION.
+H2_FILE = "tidal_amplitude_NA12.nc" !
+                                ! The path to the file containing the sub-grid-scale topographic roughness
+                                ! amplitude with INT_TIDE_DISSIPATION.
+
 ! === module MOM_bkgnd_mixing ===
 ! Adding static vertical background mixing coefficients
 KD = 1.0E-05                    !   [m2 s-1] default = 0.0
@@ -447,9 +474,24 @@ KD = 1.0E-05                    !   [m2 s-1] default = 0.0
                                 ! molecular value, ~1e-7 m2 s-1, may be used.
 KD_MIN = 2.0E-07                !   [m2 s-1] default = 1.0E-07
                                 ! The minimum diapycnal diffusivity.
+DOUBLE_DIFFUSION = True         !   [Boolean] default = False
+                                ! If true, increase diffusivites for temperature or salinity based on the
+                                ! double-diffusive parameterization described in Large et al. (1994).
+
+! === module MOM_kappa_shear ===
+! Parameterization of shear-driven turbulence following Jackson, Hallberg and Legg, JPO 2008
+USE_JACKSON_PARAM = True        !   [Boolean] default = False
+                                ! If true, use the Jackson-Hallberg-Legg (JPO 2008) shear mixing
+                                ! parameterization.
+MAX_RINO_IT = 25                !   [nondim] default = 50
+                                ! The maximum number of iterations that may be used to estimate the Richardson
+                                ! number driven mixing.
 
 ! === module MOM_diabatic_aux ===
 ! The following parameters are used for auxiliary diabatic processes.
+DO_RIVERMIX = True              !   [Boolean] default = False
+                                ! If true, apply additional mixing wherever there is runoff, so that it is mixed
+                                ! down to RIVERMIX_DEPTH if the ocean is that deep.
 VAR_PEN_SW = True               !   [Boolean] default = False
                                 ! If true, use one of the CHL_A schemes specified by OPACITY_SCHEME to determine
                                 ! the e-folding depth of incoming short wave radiation.

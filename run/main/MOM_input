@@ -665,6 +665,9 @@ PRESSURE_DEPENDENT_FRAZIL = False !   [Boolean] default = False
                                 ! If true, use a pressure dependent freezing temperature
                                 ! when making frazil. The default is false, which will be
                                 ! faster but is inappropriate with ice-shelf cavities.
+DO_RIVERMIX = True              !   [Boolean] default = False
+                                ! If true, apply additional mixing wherever there is runoff, so that it is mixed
+                                ! down to RIVERMIX_DEPTH if the ocean is that deep.
 !BBL_MIXING_AS_MAX = False       !   [Boolean] default = True
                                 ! If true, take the maximum of the diffusivity from the
                                 ! BBL mixing and the other diffusivities. Otherwise,
@@ -695,28 +698,38 @@ KD_MIN = 2.0E-07                !   [m2 s-1] default = 2.0E-08
                                 ! The maximum permitted increment for the diapycnal
                                 ! diffusivity from TKE-based parameterizations, or a
                                 ! negative value for no limit.
-INT_TIDE_DISSIPATION = False    !   [Boolean] default = False
+DOUBLE_DIFFUSION = True         !   [Boolean] default = False
+                                ! If true, increase diffusivites for temperature or salinity based on the
+                                ! double-diffusive parameterization described in Large et al. (1994).
+INT_TIDE_DISSIPATION = True     !   [Boolean] default = False
                                 ! If true, use an internal tidal dissipation scheme to
                                 ! drive diapycnal mixing, along the lines of St. Laurent
                                 ! et al. (2002) and Simmons et al. (2004).
-!INT_TIDE_DECAY_SCALE = 300.3003003003003 !   [m] default = 0.0
+INT_TIDE_PROFILE = "POLZIN_09"  ! default = "STLAURENT_02"
+                                ! INT_TIDE_PROFILE selects the vertical profile of energy dissipation with
+                                ! INT_TIDE_DISSIPATION. Valid values are:
+                                !    STLAURENT_02 - Use the St. Laurent et al exponential
+                                !                   decay profile.
+                                !    POLZIN_09 - Use the Polzin WKB-stretched algebraic
+                                !                   decay profile.
+INT_TIDE_DECAY_SCALE = 300.3003003003003 !   [m] default = 0.0
                                 ! The decay scale away from the bottom for tidal TKE with
                                 ! the new coding when INT_TIDE_DISSIPATION is used.
-!KAPPA_ITIDES = 6.28319E-04      !   [m-1] default = 6.283185307179586E-04
+KAPPA_ITIDES = 6.28319E-04      !   [m-1] default = 6.283185307179586E-04
                                 ! A topographic wavenumber used with INT_TIDE_DISSIPATION.
                                 ! The default is 2pi/10 km, as in St.Laurent et al. 2002.
-!KAPPA_H2_FACTOR = 0.84          !   [nondim] default = 1.0
+KAPPA_H2_FACTOR = 0.84          !   [nondim] default = 1.0
                                 ! A scaling factor for the roughness amplitude with nINT_TIDE_DISSIPATION.
-!TKE_ITIDE_MAX = 0.1             !   [W m-2] default = 1000.0
+TKE_ITIDE_MAX = 0.1             !   [W m-2] default = 1000.0
                                 ! The maximum internal tide energy source availble to mix
                                 ! above the bottom boundary layer with INT_TIDE_DISSIPATION.
-!READ_TIDEAMP = False             !   [Boolean] default = False
+READ_TIDEAMP = False             !   [Boolean] default = False
                                 ! If true, read a file (given by TIDEAMP_FILE) containing
                                 ! the tidal amplitude with INT_TIDE_DISSIPATION.
-!TIDEAMP_FILE = "tidal_amplitude.v20140616.nc" ! default = "tideamp.nc"
+TIDEAMP_FILE = "tidal_amplitude_NA12.nc" ! default = "tideamp.nc"
                                 ! The path to the file containing the spatially varying
                                 ! tidal amplitudes with INT_TIDE_DISSIPATION.
-!H2_FILE = "depth_ATLb0.08_09m11_mom6.nc"      !
+H2_FILE = "tidal_amplitude_NA12.nc"      !
                                 ! The path to the file containing the sub-grid-scale
                                 ! topographic roughness amplitude with INT_TIDE_DISSIPATION.
 
@@ -801,7 +814,7 @@ HMIX_MIN = 2.0                  !   [m] default = 0.0
 
 ! === module MOM_kappa_shear ===
 ! Parameterization of shear-driven turbulence following Jackson, Hallberg and Legg, JPO 2008
-USE_JACKSON_PARAM = False        !   [Boolean] default = False
+USE_JACKSON_PARAM = True        !   [Boolean] default = False
                                 ! If true, use the Jackson-Hallberg-Legg (JPO 2008)
                                 ! shear mixing parameterization.
 MAX_RINO_IT = 25                !   [nondim] default = 50

@@ -1384,9 +1384,79 @@ SET_DIFF_2018_ANSWERS = False   !   [Boolean] default = False
 ! Vertical Tidal Mixing Parameterization
 USE_CVMix_TIDAL = False         !   [Boolean] default = False
                                 ! If true, turns on tidal mixing via CVMix
-INT_TIDE_DISSIPATION = False    !   [Boolean] default = False
+INT_TIDE_DISSIPATION = True     !   [Boolean] default = False
                                 ! If true, use an internal tidal dissipation scheme to drive diapycnal mixing,
                                 ! along the lines of St. Laurent et al. (2002) and Simmons et al. (2004).
+TIDAL_MIXING_2018_ANSWERS = False !   [Boolean] default = False
+                                ! If true, use the order of arithmetic and expressions that recover the answers
+                                ! from the end of 2018.  Otherwise, use updated and more robust forms of the
+                                ! same expressions.
+INT_TIDE_PROFILE = "POLZIN_09"  ! default = "STLAURENT_02"
+                                ! INT_TIDE_PROFILE selects the vertical profile of energy dissipation with
+                                ! INT_TIDE_DISSIPATION. Valid values are:
+                                !    STLAURENT_02 - Use the St. Laurent et al exponential
+                                !                   decay profile.
+                                !    POLZIN_09 - Use the Polzin WKB-stretched algebraic
+                                !                   decay profile.
+LEE_WAVE_DISSIPATION = False    !   [Boolean] default = False
+                                ! If true, use an lee wave driven dissipation scheme to drive diapycnal mixing,
+                                ! along the lines of Nikurashin (2010) and using the St. Laurent et al. (2002)
+                                ! and Simmons et al. (2004) vertical profile
+INT_TIDE_LOWMODE_DISSIPATION = False !   [Boolean] default = False
+                                ! If true, consider mixing due to breaking low modes that have been remotely
+                                ! generated; as with itidal drag on the barotropic tide, use an internal tidal
+                                ! dissipation scheme to drive diapycnal mixing, along the lines of St. Laurent
+                                ! et al. (2002) and Simmons et al. (2004).
+NU_POLZIN = 0.0697              !   [nondim] default = 0.0697
+                                ! When the Polzin decay profile is used, this is a non-dimensional constant in
+                                ! the expression for the vertical scale of decay for the tidal energy
+                                ! dissipation.
+NBOTREF_POLZIN = 9.61E-04       !   [s-1] default = 9.61E-04
+                                ! When the Polzin decay profile is used, this is the reference value of the
+                                ! buoyancy frequency at the ocean bottom in the Polzin formulation for the
+                                ! vertical scale of decay for the tidal energy dissipation.
+POLZIN_DECAY_SCALE_FACTOR = 1.0 !   [nondim] default = 1.0
+                                ! When the Polzin decay profile is used, this is a scale factor for the vertical
+                                ! scale of decay of the tidal energy dissipation.
+POLZIN_SCALE_MAX_FACTOR = 1.0   !   [nondim] default = 1.0
+                                ! When the Polzin decay profile is used, this is a factor to limit the vertical
+                                ! scale of decay of the tidal energy dissipation to
+                                ! POLZIN_DECAY_SCALE_MAX_FACTOR times the depth of the ocean.
+POLZIN_MIN_DECAY_SCALE = 0.0    !   [m] default = 0.0
+                                ! When the Polzin decay profile is used, this is the minimum vertical decay
+                                ! scale for the vertical profile
+                                ! of internal tide dissipation with the Polzin (2009) formulation
+INT_TIDE_DECAY_SCALE = 300.3003003003003 !   [m] default = 500.0
+                                ! The decay scale away from the bottom for tidal TKE with the new coding when
+                                ! INT_TIDE_DISSIPATION is used.
+MU_ITIDES = 0.2                 !   [nondim] default = 0.2
+                                ! A dimensionless turbulent mixing efficiency used with INT_TIDE_DISSIPATION,
+                                ! often 0.2.
+GAMMA_ITIDES = 0.3333           !   [nondim] default = 0.3333
+                                ! The fraction of the internal tidal energy that is dissipated locally with
+                                ! INT_TIDE_DISSIPATION. THIS NAME COULD BE BETTER.
+MIN_ZBOT_ITIDES = 0.0           !   [m] default = 0.0
+                                ! Turn off internal tidal dissipation when the total ocean depth is less than
+                                ! this value.
+KAPPA_ITIDES = 6.28319E-04      !   [m-1] default = 6.283185307179586E-04
+                                ! A topographic wavenumber used with INT_TIDE_DISSIPATION. The default is 2pi/10
+                                ! km, as in St.Laurent et al. 2002.
+UTIDE = 0.0                     !   [m s-1] default = 0.0
+                                ! The constant tidal amplitude used with INT_TIDE_DISSIPATION.
+KAPPA_H2_FACTOR = 0.84          !   [nondim] default = 1.0
+                                ! A scaling factor for the roughness amplitude with INT_TIDE_DISSIPATION.
+TKE_ITIDE_MAX = 0.1             !   [W m-2] default = 1000.0
+                                ! The maximum internal tide energy source available to mix above the bottom
+                                ! boundary layer with INT_TIDE_DISSIPATION.
+READ_TIDEAMP = False            !   [Boolean] default = False
+                                ! If true, read a file (given by TIDEAMP_FILE) containing the tidal amplitude
+                                ! with INT_TIDE_DISSIPATION.
+H2_FILE = "tidal_amplitude_NA12.nc" !
+                                ! The path to the file containing the sub-grid-scale topographic roughness
+                                ! amplitude with INT_TIDE_DISSIPATION.
+FRACTIONAL_ROUGHNESS_MAX = 0.1  !   [nondim] default = 0.1
+                                ! The maximum topographic roughness amplitude as a fraction of the mean depth,
+                                ! or a negative value for no limitations on roughness.
 ML_RADIATION = False            !   [Boolean] default = False
                                 ! If true, allow a fraction of TKE available from wind work to penetrate below
                                 ! the base of the mixed layer with a vertical decay scale determined by the
@@ -1459,18 +1529,88 @@ DISSIPATION_N1 = 0.0            !   [J m-3] default = 0.0
                                 ! = A + B*N
 DISSIPATION_KD_MIN = 0.0        !   [m2 s-1] default = 0.0
                                 ! The minimum vertical diffusivity applied as a floor.
-DOUBLE_DIFFUSION = False        !   [Boolean] default = False
+DOUBLE_DIFFUSION = True         !   [Boolean] default = False
                                 ! If true, increase diffusivites for temperature or salinity based on the
                                 ! double-diffusive parameterization described in Large et al. (1994).
+MAX_RRHO_SALT_FINGERS = 2.55    !   [nondim] default = 2.55
+                                ! Maximum density ratio for salt fingering regime.
+MAX_SALT_DIFF_SALT_FINGERS = 1.0E-04 !   [m2 s-1] default = 1.0E-04
+                                ! Maximum salt diffusivity for salt fingering regime.
+KV_MOLECULAR = 1.5E-06          !   [m2 s-1] default = 1.5E-06
+                                ! Molecular viscosity for calculation of fluxes under double-diffusive
+                                ! convection.
 
 ! === module MOM_kappa_shear ===
 ! Parameterization of shear-driven turbulence following Jackson, Hallberg and Legg, JPO 2008
-USE_JACKSON_PARAM = False       !   [Boolean] default = False
+USE_JACKSON_PARAM = True        !   [Boolean] default = False
                                 ! If true, use the Jackson-Hallberg-Legg (JPO 2008) shear mixing
                                 ! parameterization.
+VERTEX_SHEAR = False            !   [Boolean] default = False
+                                ! If true, do the calculations of the shear-driven mixing at the cell vertices
+                                ! (i.e., the vorticity points).
+RINO_CRIT = 0.25                !   [nondim] default = 0.25
+                                ! The critical Richardson number for shear mixing.
+SHEARMIX_RATE = 0.089           !   [nondim] default = 0.089
+                                ! A nondimensional rate scale for shear-driven entrainment. Jackson et al find
+                                ! values in the range of 0.085-0.089.
+MAX_RINO_IT = 25                !   [nondim] default = 50
+                                ! The maximum number of iterations that may be used to estimate the Richardson
+                                ! number driven mixing.
+KD_KAPPA_SHEAR_0 = 1.0E-05      !   [m2 s-1] default = 1.0E-05
+                                ! The background diffusivity that is used to smooth the density and shear
+                                ! profiles before solving for the diffusivities.  The default is the greater of
+                                ! KD and 1e-7 m2 s-1.
+KD_TRUNC_KAPPA_SHEAR = 1.0E-07  !   [m2 s-1] default = 1.0E-07
+                                ! The value of shear-driven diffusivity that is considered negligible and is
+                                ! rounded down to 0. The default is 1% of KD_KAPPA_SHEAR_0.
+FRI_CURVATURE = -0.97           !   [nondim] default = -0.97
+                                ! The nondimensional curvature of the function of the Richardson number in the
+                                ! kappa source term in the Jackson et al. scheme.
+TKE_N_DECAY_CONST = 0.24        !   [nondim] default = 0.24
+                                ! The coefficient for the decay of TKE due to stratification (i.e. proportional
+                                ! to N*tke). The values found by Jackson et al. are 0.24-0.28.
+TKE_SHEAR_DECAY_CONST = 0.14    !   [nondim] default = 0.14
+                                ! The coefficient for the decay of TKE due to shear (i.e. proportional to
+                                ! |S|*tke). The values found by Jackson et al. are 0.14-0.12.
+KAPPA_BUOY_SCALE_COEF = 0.82    !   [nondim] default = 0.82
+                                ! The coefficient for the buoyancy length scale in the kappa equation.  The
+                                ! values found by Jackson et al. are in the range of 0.81-0.86.
+KAPPA_N_OVER_S_SCALE_COEF2 = 0.0 !   [nondim] default = 0.0
+                                ! The square of the ratio of the coefficients of the buoyancy and shear scales
+                                ! in the diffusivity equation, Set this to 0 (the default) to eliminate the
+                                ! shear scale. This is only used if USE_JACKSON_PARAM is true.
+KAPPA_SHEAR_TOL_ERR = 0.1       !   [nondim] default = 0.1
+                                ! The fractional error in kappa that is tolerated. Iteration stops when changes
+                                ! between subsequent iterations are smaller than this everywhere in a column.
+                                ! The peak diffusivities usually converge most rapidly, and have much smaller
+                                ! errors than this.
 TKE_BACKGROUND = 0.0            !   [m2 s-2] default = 0.0
                                 ! A background level of TKE used in the first iteration of the kappa equation.
                                 ! TKE_BACKGROUND could be 0.
+KAPPA_SHEAR_ELIM_MASSLESS = True !   [Boolean] default = True
+                                ! If true, massless layers are merged with neighboring massive layers in this
+                                ! calculation.  The default is true and I can think of no good reason why it
+                                ! should be false. This is only used if USE_JACKSON_PARAM is true.
+MAX_KAPPA_SHEAR_IT = 13         !   [nondim] default = 13
+                                ! The maximum number of iterations that may be used to estimate the
+                                ! time-averaged diffusivity.
+KAPPA_SHEAR_MAX_KAP_SRC_CHG = 10.0 !   [nondim] default = 10.0
+                                ! The maximum permitted increase in the kappa source within an iteration
+                                ! relative to the local source; this must be greater than 1.  The lower limit
+                                ! for the permitted fractional decrease is (1 - 0.5/kappa_src_max_chg).  These
+                                ! limits could perhaps be made dynamic with an improved iterative solver.
+KAPPA_SHEAR_ITER_BUG = False    !   [Boolean] default = False
+                                ! If true, use an older, dimensionally inconsistent estimate of the derivative
+                                ! of diffusivity with energy in the Newton's method iteration.  The bug causes
+                                ! undercorrections when dz > 1 m.
+KAPPA_SHEAR_ALL_LAYER_TKE_BUG = False !   [Boolean] default = False
+                                ! If true, report back the latest estimate of TKE instead of the time average
+                                ! TKE when there is mass in all layers.  Otherwise always report the time
+                                ! averaged TKE, as is currently done when there are some massless layers.
+USE_RESTRICTIVE_TOLERANCE_CHECK = False !   [Boolean] default = False
+                                ! If true, uses the more restrictive tolerance check to determine if a timestep
+                                ! is acceptable for the KS_it outer iteration loop.  False uses the original
+                                ! less restrictive check.
 
 ! === module MOM_CVMix_shear ===
 ! Parameterization of shear-driven turbulence via CVMix (various options)
@@ -1503,9 +1643,11 @@ IGNORE_FLUXES_OVER_LAND = False !   [Boolean] default = False
                                 ! points. This is needed when the ocean is coupled with ice shelves and sea ice,
                                 ! since the sea ice mask needs to be different than the ocean mask to avoid sea
                                 ! ice formation under ice shelves. This flag only works when use_ePBL = True.
-DO_RIVERMIX = False             !   [Boolean] default = False
+DO_RIVERMIX = True              !   [Boolean] default = False
                                 ! If true, apply additional mixing wherever there is runoff, so that it is mixed
                                 ! down to RIVERMIX_DEPTH if the ocean is that deep.
+RIVERMIX_DEPTH = 0.0            !   [m] default = 0.0
+                                ! The depth to which rivers are mixed if DO_RIVERMIX is defined.
 USE_RIVER_HEAT_CONTENT = False  !   [Boolean] default = False
                                 ! If true, use the fluxes%runoff_Hflx field to set the heat carried by runoff,
                                 ! instead of using SST*CP*liq_runoff.
@@ -1865,11 +2007,6 @@ MASK_SRESTORE = False           !   [Boolean] default = False
                                 ! If true, read a file (salt_restore_mask) containing a mask for SSS restoring.
 CD_TIDES = 0.0018               !   [nondim] default = 1.0E-04
                                 ! The drag coefficient that applies to the tides.
-READ_TIDEAMP = False            !   [Boolean] default = False
-                                ! If true, read a file (given by TIDEAMP_FILE) containing the tidal amplitude
-                                ! with INT_TIDE_DISSIPATION.
-UTIDE = 0.0                     !   [m s-1] default = 0.0
-                                ! The constant tidal amplitude used with INT_TIDE_DISSIPATION.
 READ_GUST_2D = False            !   [Boolean] default = False
                                 ! If true, use a 2-dimensional gustiness supplied from an input file
 GUST_CONST = 0.0                !   [Pa] default = 0.0
