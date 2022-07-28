@@ -723,7 +723,7 @@ KAPPA_H2_FACTOR = 0.84          !   [nondim] default = 1.0
 TKE_ITIDE_MAX = 0.1             !   [W m-2] default = 1000.0
                                 ! The maximum internal tide energy source availble to mix
                                 ! above the bottom boundary layer with INT_TIDE_DISSIPATION.
-READ_TIDEAMP = False             !   [Boolean] default = False
+READ_TIDEAMP = True             !   [Boolean] default = False
                                 ! If true, read a file (given by TIDEAMP_FILE) containing
                                 ! the tidal amplitude with INT_TIDE_DISSIPATION.
 TIDEAMP_FILE = "tidal_amplitude_NA12.nc" ! default = "tideamp.nc"
@@ -964,7 +964,7 @@ SPONGE_DATA_ONGRID = True       !   [Boolean] default = False
 
 
 ! === Tides options ===
-TIDES = False                   ! default = False. If true, apply tidal momentum forcing.
+TIDES = True                   ! default = False. If true, apply tidal momentum forcing.
 TIDE_M2 = True
 TIDE_S2 = True
 TIDE_N2 = True
@@ -977,7 +977,7 @@ TIDE_MM = True
 TIDE_MF = True
 TIDE_SAL_SCALAR_VALUE = 0.094
 TIDE_USE_SAL_SCALAR = True
-TIDE_REF_DATE = 1993,1,1
+TIDE_REF_DATE = 1996,1,1
 TIDE_USE_EQ_PHASE = True
 
 
@@ -986,21 +986,21 @@ OBC_NUMBER_OF_SEGMENTS = 2      ! [Integer] The number of open boundary segments
 OBC_SEGMENT_001 = "J=0,I=0:N,FLATHER,ORLANSKI,NUDGED,ORLANSKI_TAN,NUDGED_TAN" ! South
 OBC_SEGMENT_002 = "J=N,I=N:0,FLATHER,ORLANSKI,NUDGED,ORLANSKI_TAN,NUDGED_TAN" ! North
 
-OBC_SEGMENT_001_DATA = "U=file:obc_uv_south.nc(u),V=file:obc_uv_south.nc(v),SSH=file:obc_ssh_south.nc(ssh),TEMP=file:obc_ts_south.nc(temp),SALT=file:obc_ts_south.nc(salt)"
-OBC_SEGMENT_002_DATA = "U=file:obc_uv_north.nc(u),V=file:obc_uv_north.nc(v),SSH=file:obc_ssh_north.nc(ssh),TEMP=file:obc_ts_north.nc(temp),SALT=file:obc_ts_north.nc(salt)"
+OBC_SEGMENT_001_DATA = "U=file:uv_south.nc(u),V=file:uv_south.nc(v),SSH=file:ssh_south.nc(ssh),TEMP=file:ts_south.nc(temp),SALT=file:ts_south.nc(salt),Uamp=file:tu_01.nc(uamp),Uphase=file:tu_01.nc(uphase),Vamp=file:tu_01.nc(vamp),Vphase=file:tu_01.nc(vphase),SSHamp=file:tz_01.nc(zamp),SSHphase=file:tz_01.nc(zphase)"
+OBC_SEGMENT_002_DATA = "U=file:uv_north.nc(u),V=file:uv_north.nc(v),SSH=file:ssh_north.nc(ssh),TEMP=file:ts_north.nc(temp),SALT=file:ts_north.nc(salt),Uamp=file:tu_02.nc(uamp),Uphase=file:tu_02.nc(uphase),Vamp=file:tu_02.nc(vamp),Vphase=file:tu_02.nc(vphase),SSHamp=file:tz_02.nc(zamp),SSHphase=file:tz_02.nc(zphase)"
 
 ! OBC_SEGMENT_001_DATA = "U=file:uv_001.nc(u),V=file:uv_001.nc(v),SSH=file:zeta_001.nc(zeta),TEMP=file:temp_001.nc(temp),SALT=file:salt_001.nc(salt),Uamp=file:tu_001.nc(uamp),Uphase=file:tu_001.nc(uphase),Vamp=file:tu_001.nc(vamp),Vphase=file:tu_001.nc(vphase),SSHamp=file:tz_001.nc(zamp),SSHphase=file:tz_001.nc(zphase)"
 ! OBC_SEGMENT_002_DATA = "U=file:uv_002.nc(u),V=file:uv_002.nc(v),SSH=file:zeta_002.nc(zeta),TEMP=file:temp_002.nc(temp),SALT=file:salt_002.nc(salt),Uamp=file:tu_002.nc(uamp),Uphase=file:tu_002.nc(uphase),Vamp=file:tu_002.nc(vamp),Vphase=file:tu_002.nc(vphase),SSHamp=file:tz_002.nc(zamp),SSHphase=file:tz_002.nc(zphase)"
 
-OBC_TIDE_N_CONSTITUENTS = 0
+OBC_TIDE_N_CONSTITUENTS = 10
 OBC_TIDE_CONSTITUENTS = "M2,S2,N2,K2,K1,O1,P1,Q1,MM,MF"
-OBC_TIDE_REF_DATE = 1993,1,1
+OBC_TIDE_REF_DATE = 1996,1,1
 OBC_TIDE_ADD_EQ_PHASE = True
 OBC_TIDE_ADD_NODAL = True
-OBC_TIDE_NODAL_REF_DATE = 1993,7,2
+OBC_TIDE_NODAL_REF_DATE = 1996,7,2
 
-OBC_SEGMENT_001_VELOCITY_NUDGING_TIMESCALES = 0.3, 360
-OBC_SEGMENT_002_VELOCITY_NUDGING_TIMESCALES = 0.3, 360
+OBC_SEGMENT_001_VELOCITY_NUDGING_TIMESCALES = 3, 360
+OBC_SEGMENT_002_VELOCITY_NUDGING_TIMESCALES = 3, 360
 OBC_TRACER_RESERVOIR_LENGTH_SCALE_OUT = 30000
 OBC_TRACER_RESERVOIR_LENGTH_SCALE_IN = 3000
 BRUSHCUTTER_MODE = True
