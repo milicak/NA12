@@ -72,12 +72,12 @@ THICKNESSDIFFUSE = False        !   [Boolean] default = False
 THICKNESSDIFFUSE_FIRST = True   !   [Boolean] default = False
                                 ! If true, do thickness diffusion before dynamics.
                                 ! This is only used if THICKNESSDIFFUSE is true.
-DT = 600.0                      !   [s]
+DT = 300.0                      !   [s]
                                 ! The (baroclinic) dynamics time step.  The time-step that
                                 ! is actually used will be an integer fraction of the
                                 ! forcing time-step (DT_FORCING in ocean-only mode or the
                                 ! coupling timestep in coupled mode.)
-DT_THERM = 1200.0               !   [s] default = 1200.0
+DT_THERM = 3600.0               !   [s] default = 1200.0
                                 ! The thermodynamic and tracer advection time step.
                                 ! Ideally DT_THERM should be an integer multiple of DT
                                 ! and less than the forcing or coupling time-step, unless
@@ -549,9 +549,13 @@ HMIX_FIXED = 0.9                !   [m]
 HMIX_STRESS = 0.9               !   [m]
                                 ! The depth over which the wind stress is applied if
                                 ! DIRECT_STRESS is true.
-KV = 1.0E-05                    !   [m2 s-1]
+BBL_EFFIC = 0.2                !   [nondim] default = 0.2
+                                ! The efficiency with which the energy extracted by bottom drag drives BBL
+                                ! diffusion.  This is only used if BOTTOMDRAGLAW is true.
+KV = 1.0E-06                    !   [m2 s-1]
                                 ! The background kinematic viscosity in the interior.
                                 ! The molecular value, ~1e-6 m2 s-1, may be used.
+! KVML = 1.0E-05                  !   [m2 s-1] default = KV;
 KVML = 1.0E-02                  !   [m2 s-1] default = KV;
                                 ! The kinematic viscosity in the mixed layer.  A typical
                                 ! value is ~1e-2 m2 s-1. KVML is not used if
@@ -688,7 +692,7 @@ DO_RIVERMIX = True              !   [Boolean] default = False
                                 ! The floor applied to N2(k) scaled by Omega^2:
                                 !   If =0., N2(k) is simply positive definite.
                                 !   If =1., N2(k) > Omega^2 everywhere.
-KD = 1.0E-05                    !   [m2 s-1]
+KD = 1.0E-06                    !   [m2 s-1]
                                 ! The background diapycnal diffusivity of density in the
                                 ! interior. Zero or the molecular value, ~1e-7 m2 s-1,
                                 ! may be used.
@@ -851,7 +855,8 @@ BLUE_FRAC_SW = 0.5              !   [nondim] default = 0.5
                                 ! The fraction of the penetrating shortwave radiation that is in the blue band.
 CHL_FROM_FILE = True            !   [Boolean] default = True
                                 ! If true, chl_a is read from a file.
-CHL_FILE = "seawifs-clim-1997-2010.smoothed.nc"
+CHL_FILE = "seawifs-clim.1997.2010.nwa12_v2.nc"
+! CHL_FILE = "seawifs-clim-1997-2010.smoothed.nc"
                                 ! CHL_FILE is the file containing chl_a concentrations in
                                 ! the variable CHL_A. It is used when VAR_PEN_SW and
                                 ! CHL_FROM_FILE are true.
@@ -898,7 +903,7 @@ SALT_RESTORE_VARIABLE = "SSS"  ! default = "salt"
                                 ! The name of the surface salinity variable to read from SALT_RESTORE_FILE for restoring salinity.
 
 ! === module MOM_surface_forcing ===
-MAX_P_SURF = 0.0                !   [Pa] default = -1.0
+MAX_P_SURF = -1.0                !   [Pa] default = -1.0
                                 ! The maximum surface pressure that can be exerted by the
                                 ! atmosphere and floating sea-ice or ice shelves. This is
                                 ! needed because the FMS coupling structure does not
@@ -997,7 +1002,7 @@ OBC_TIDE_CONSTITUENTS = "M2,S2,N2,K2,K1,O1,P1,Q1,MM,MF"
 OBC_TIDE_REF_DATE = 1996,1,1
 OBC_TIDE_ADD_EQ_PHASE = True
 OBC_TIDE_ADD_NODAL = True
-OBC_TIDE_NODAL_REF_DATE = 1996,7,2
+OBC_TIDE_NODAL_REF_DATE = 1996,1,1
 
 OBC_SEGMENT_001_VELOCITY_NUDGING_TIMESCALES = 3, 360
 OBC_SEGMENT_002_VELOCITY_NUDGING_TIMESCALES = 3, 360

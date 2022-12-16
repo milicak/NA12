@@ -2,9 +2,10 @@ NWA-zstar-obc
 1900 1 1 0 0 0
 
 # MOM6 ocean diagnostics files
-"ocean_hour_snap",        1, "hours",  1, "hours", "time"
+# "ocean_hour_snap",        1, "hours",  1, "hours", "time"
 "ice_month",              1, "months", 1, "days" , "time"
 "ocean_daily",            1, "days",   1, "days",  "time"
+"ocean_5day",             5, "days", 1, "days", "time"
 "ocean_month_snap%4yr_%2mo",   1,  "months", 1, "days", "time",1,"months"
 "ocean_month%4yr_%2mo",   1,  "months", 1, "days", "time",1,"months"
 "ocean_month_z%4yr_%2mo", 1,  "months", 1, "days", "time",1,"months"
@@ -16,9 +17,9 @@ NWA-zstar-obc
 "ocean_Yucatan_Cuba_II",         1, "days",   1, "days", "time"
 
 # Hourly ocean for tides
-"ocean_model",   "SSU",      "ssu",         "ocean_hour_snap", "all", "none", "none", 2
-"ocean_model",   "SSV",      "ssv",         "ocean_hour_snap", "all", "none", "none", 2
-"ocean_model",   "zos",      "zos",         "ocean_hour_snap", "all", "none", "none", 2
+# "ocean_model",   "SSU",      "ssu",         "ocean_hour_snap", "all", "none", "none", 2
+# "ocean_model",   "SSV",      "ssv",         "ocean_hour_snap", "all", "none", "none", 2
+# "ocean_model",   "zos",      "zos",         "ocean_hour_snap", "all", "none", "none", 2
 
 # Monthly sea ice
 "ice_model",     "siconc",   "aice",        "ice_month",       "all", "mean", "none", 2
@@ -27,6 +28,13 @@ NWA-zstar-obc
 "ice_model",     "VI",       "vice",        "ice_month",       "all", "mean", "none", 2
 "ice_model",     "HS",       "hsnow",       "ice_month",       "all", "mean", "none", 2
 
+# 5 day diagnostic fields (removes diurnal tides)
+"ocean_model_z", "volcello",     "volcello",     "ocean_5day", "all", "mean", "none", 2
+"ocean_model_z", "u",            "u",            "ocean_5day", "all", "mean", "none", 2
+"ocean_model_z", "v",            "v",            "ocean_5day", "all", "mean", "none", 2
+"ocean_model_z", "temp",         "temp",         "ocean_5day", "all", "mean", "none", 2
+"ocean_model_z", "salt",         "salt",         "ocean_5day", "all", "mean", "none", 2
+"ocean_model_z", "MEKE",         "meke",         "ocean_5day", "all", "mean", "none", 2
 
 # MOM6 ocean diagnostics files
 
@@ -343,6 +351,8 @@ NWA-zstar-obc
 
 # -----------------------------------------------------------------------------------------
 # High-frequency
+#  "ocean_model","umo",           "umo",              "ocean_daily", "all", "mean", "none",2
+#  "ocean_model","vmo",           "vmo",              "ocean_daily", "all", "mean", "none",2
  "ocean_model", "SSU",          "ssu",              "ocean_daily", "all", "mean", "none",2
  "ocean_model", "SSV",          "ssv",              "ocean_daily", "all", "mean", "none",2
 #"ocean_model", "tos",          "tos_max",          "ocean_daily", "all", "max",  "none",2
